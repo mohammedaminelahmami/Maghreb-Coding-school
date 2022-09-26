@@ -5,6 +5,7 @@ public class ConnectionDatabase {
     final String username = "root";
     final String password = "";
     protected Connection conn;
+    protected PreparedStatement stmt;
 
     public ConnectionDatabase()
     {
@@ -18,10 +19,3 @@ public class ConnectionDatabase {
         }
     }
 }
-
-/*
-    1 ) - PreparedStatement stmt = con.prepareStatement();
-    2 ) - stmt.executeQuery()
-    3 ) - update : (int) | stmt.UpdateQuery() => 0 - 1
-    4 ) - setString(---) | setInt(---)
- */
