@@ -1,13 +1,9 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
         Admin admin = new Admin();
-        //admin.createAccount("formateur", "Youness Echchadi", "youness", "passYouness");
-        ArrayList<String> arr = admin.selectAllAccounts("formateur");
-        System.out.println(arr.toString());
-
-        //admin.updateAccount("formateur", "Youness Echchadi", "youness", "passYouness");
-
+        admin.selectAllAccounts("formateur");
     }
 }
