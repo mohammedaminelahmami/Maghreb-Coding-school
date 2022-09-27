@@ -6,9 +6,7 @@ public class Admin extends ConnectionDatabase{
     private String password;
     private String email;
     protected ArrayList<String> arr = new ArrayList<String>();
-    protected int l = 3;
-    protected int c = 3;
-    protected String[][] arr2 = new String[l][c];
+    protected String[][] arr2 = new String[10][10];
 
     public Admin()
     {
@@ -34,14 +32,11 @@ public class Admin extends ConnectionDatabase{
     public String[][] selectAllAccounts(String table)
     {
         try{
-            this.stmt = this.conn.prepareStatement("select count(*) as countRow from " + table);
-            ResultSet rsCount = stmt.executeQuery();
-            rsCount.next();
-            int count = rsCount.getInt("countRow");
-            System.out.println(count);
-            rsCount.beforeFirst();
+            this.stmt = this.conn.prepareStatement("select * from " + table);
+            ResultSet rs = stmt.executeQuery();
+
             int i = 0;
-            /*while(rs.next())
+            while(rs.next())
             {
                 for(int j = 0; j < rs.getMetaData().getColumnCount(); j++)
                 {
@@ -49,21 +44,13 @@ public class Admin extends ConnectionDatabase{
                 }
                 i++;
             }
-            rs.close();*/
+            rs.close();
             return arr2;
         }catch (Exception e)
         {
             System.out.println("error => " + e);
             return arr2;
         }
-    }
-    public void setL(int l)
-    {
-        this.l = l;
-    }
-    public void setC(int c)
-    {
-        this.c = c;
     }
 
     public ArrayList<String> selectOneAccount(String table, int id)
@@ -118,11 +105,12 @@ public class Admin extends ConnectionDatabase{
             return false;
         }
     }
-    public boolean createPromo(String name)
+    public boolean createPromo(String name, int idF)
     {
         try{
-            this.stmt = this.conn.prepareStatement("insert into promotion (name) values (?)");
+            this.stmt = this.conn.prepareStatement("insert into promotion (name, idF) values (?, ?)");
             stmt.setString(1, name);
+            stmt.setInt(2, idF);
             int rs = stmt.executeUpdate();
             return rs == 1;
         }catch(Exception e)
