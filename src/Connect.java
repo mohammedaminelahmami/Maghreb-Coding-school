@@ -11,7 +11,7 @@ public class Connect extends ConnectionDatabase{
             boolean a = false;
             while(rs.next())
             {
-                if(rs.getString(2).equals(username) && rs.getString(3).equals(password))
+                if(rs.getString(3).equals(username) && rs.getString(4).equals(password))
                 {
                     a = true;
                 }else{
