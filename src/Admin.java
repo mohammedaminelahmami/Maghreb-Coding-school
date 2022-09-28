@@ -1,4 +1,5 @@
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 
 public class Admin extends ConnectionDatabase{
@@ -6,7 +7,7 @@ public class Admin extends ConnectionDatabase{
     private String password;
     private String email;
     protected ArrayList<String> arr = new ArrayList<String>();
-    protected String[][] arr2 = new String[10][10];
+    protected String arrayVide[][] = new String[0][0];
 
     public Admin()
     {
@@ -35,6 +36,11 @@ public class Admin extends ConnectionDatabase{
             this.stmt = this.conn.prepareStatement("select * from " + table);
             ResultSet rs = stmt.executeQuery();
 
+            int a = getNumberRows(table);
+            int b = getNumberRows(table);
+
+            String[][] arr2 = new String[a][b];
+
             int i = 0;
             while(rs.next())
             {
@@ -49,7 +55,7 @@ public class Admin extends ConnectionDatabase{
         }catch (Exception e)
         {
             System.out.println("error => " + e);
-            return arr2;
+            return arrayVide;
         }
     }
 
@@ -105,12 +111,25 @@ public class Admin extends ConnectionDatabase{
             return false;
         }
     }
-    public boolean createPromo(String name, int idF)
+    public boolean createPromo(String name)
     {
         try{
-            this.stmt = this.conn.prepareStatement("insert into promotion (name, idF) values (?, ?)");
+            this.stmt = this.conn.prepareStatement("insert into promotion (name) values (?)");
             stmt.setString(1, name);
-            stmt.setInt(2, idF);
+            int rs = stmt.executeUpdate();
+            return rs == 1;
+        }catch(Exception e)
+        {
+            System.out.println("error => " + e);
+            return false;
+        }
+    }
+
+    public boolean updatePromo(int idF)
+    {
+        try{
+            this.stmt = this.conn.prepareStatement("update promotion set idF = ?");
+            stmt.setInt(1, idF);
             int rs = stmt.executeUpdate();
             return rs == 1;
         }catch(Exception e)
@@ -143,15 +162,33 @@ public class Admin extends ConnectionDatabase{
         }
     }
 
+    public boolean asignFormerToPromo()
+    {
+        try {
+
+            return true;
+        }catch(Exception e)
+        {
+            System.out.println("error => "+e);
+            return false;
+        }
+    }
+
     public String[][] selectAllPromos()
     {
         try{
             this.stmt = this.conn.prepareStatement("select * from promotion");
             ResultSet rs = stmt.executeQuery();
             int i = 0;
+
+            int a = getNumberRows("promotion");
+            int b = getNumberColumn("promotion");
+
+            String[][] arr2 = new String[a][b];
+
             while(rs.next())
             {
-                for(int j = 0; j < rs.getMetaData().getColumnCount(); j++)
+                for(int j = 0; j < b; j++)
                 {
                     arr2[i][j] = rs.getString(j+1);
                 }
@@ -162,7 +199,39 @@ public class Admin extends ConnectionDatabase{
         }catch (Exception e)
         {
             System.out.println("error => " + e);
-            return arr2;
+            return arrayVide;
+        }
+    }
+
+    public int getNumberRows(String table){
+        try{
+            stmt = conn.prepareStatement("select * from " + table,ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            ResultSet rs = stmt.executeQuery();
+            if(rs.last()){
+                return rs.getRow();
+            } else {
+                return 0;
+            }
+        } catch (Exception e){
+            System.out.println(e);
+
+        }
+        return 0;
+    }
+    public int getNumberColumn(String table) {
+        try {
+            this.stmt = this.conn.prepareStatement("select * from " + table, ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            ResultSet rs = stmt.executeQuery();
+            ResultSetMetaData count = rs.getMetaData();
+            int numOfCols = count.getColumnCount();
+            return numOfCols;
+
+        } catch (Exception e) {
+            System.out.println(e);
+            return 0;
+
         }
     }
 
