@@ -37,14 +37,14 @@ public class Admin extends ConnectionDatabase{
             ResultSet rs = stmt.executeQuery();
 
             int a = getNumberRows(table);
-            int b = getNumberRows(table);
+            int b = getNumberColumn(table);
 
             String[][] arr2 = new String[a][b];
 
             int i = 0;
             while(rs.next())
             {
-                for(int j = 0; j < rs.getMetaData().getColumnCount(); j++)
+                for(int j = 0; j < b; j++)
                 {
                     arr2[i][j] = rs.getString(j+1);
                 }
@@ -125,11 +125,12 @@ public class Admin extends ConnectionDatabase{
         }
     }
 
-    public boolean updatePromo(int idF)
+    public boolean asignFormerToPromo(int idF, int idP)
     {
         try{
-            this.stmt = this.conn.prepareStatement("update promotion set idF = ?");
+            this.stmt = this.conn.prepareStatement("update promotion set idF = ? where id = ?");
             stmt.setInt(1, idF);
+            stmt.setInt(2, idP);
             int rs = stmt.executeUpdate();
             return rs == 1;
         }catch(Exception e)
@@ -200,6 +201,45 @@ public class Admin extends ConnectionDatabase{
         {
             System.out.println("error => " + e);
             return arrayVide;
+        }
+    }
+
+    public String getFormerId(String formerName)
+    {
+        try{
+            this.stmt = this.conn.prepareStatement("select id from formateur where fullName = ?");
+            stmt.setString(1, formerName);
+            ResultSet rs = stmt.executeQuery();
+            String id = "init";
+            while(rs.next())
+            {
+                id = rs.getString(1);
+            }
+            return id;
+        }catch(Exception e)
+        {
+            System.out.println("error => "+e);
+            return "0";
+        }
+    }
+
+    public String getPromoId(String promoName)
+    {
+        try{
+            this.stmt = this.conn.prepareStatement("select id from promotion where name = ?");
+            stmt.setString(1, promoName);
+            ResultSet rs = stmt.executeQuery();
+            String id = "init";
+
+            while(rs.next())
+            {
+                id = rs.getString(1);
+            }
+            return id;
+        }catch(Exception e)
+        {
+            System.out.println("error => "+e);
+            return "0";
         }
     }
 

@@ -1,5 +1,4 @@
 import java.sql.ResultSet;
-
 public class Connect extends ConnectionDatabase{
     public boolean login(String username, String password, String table)
     {

@@ -70,10 +70,30 @@ public class Menu {
                         System.out.println("choose a promo : ");
                         String choixPromo = scanner.nextLine();
 
+                        String promo = arr[Integer.parseInt(choixPromo)-1][1];
+                        String idPromo = admin.getPromoId(promo);
 
+                        String[][] arr1 = admin.selectAllAccounts("formateur");
+
+                        for(int i = 0; i < arr1.length; i++)
+                        {
+                            for(int j = 0; j < 1; j++)
+                            {
+                                // Show All promo names
+                                System.out.println((i+1)+" ) - "+arr1[i][1]);
+                            }
+                        }
+
+                        System.out.println("choose former to asign it to promo "+promo);
+                        String choixFormer = scanner.nextLine();
+
+                        String former = arr1[Integer.parseInt(choixFormer)-1][1];
+                        String idFormer = admin.getFormerId(former);
+
+                        // assign former to promotion
+                        admin.asignFormerToPromo(Integer.parseInt(idFormer), Integer.parseInt(idPromo));
 
                         System.out.println("-----------------------------------------------------------");
-                        System.out.println("Choose a promo : ");
                     }
                 }else{
                     System.out.println("sir fhalek");
