@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -12,31 +13,7 @@ public class Main {
         Scanner s1 = new Scanner(System.in);
         System.out.print("|--> ");
         int choix = s1.nextInt();
+        Menu menu = new Menu(choix, s1, "Admin");
 
-        // System.out.println(choix);
-
-        switch (choix)
-        {
-            case 1:
-            {
-                System.out.println("Admin");
-                break;
-            }
-            case 2:
-            {
-                System.out.println("Student");
-                break;
-            }
-            case 3:
-            {
-                System.out.println("Former");
-                break;
-            }
-            default:
-            {
-                System.out.println("Noooo");
-                break;
-            }
-        }
     }
 }
