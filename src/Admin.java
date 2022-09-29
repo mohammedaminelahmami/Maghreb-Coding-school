@@ -17,10 +17,11 @@ public class Admin extends ConnectionDatabase{
     public boolean createAccount(String table, String fullName, String username, String password)
     {
         try{
-            this.stmt = this.conn.prepareStatement("insert into "+table+" (fullName, username, password) values (?, ?, ?)");
+            this.stmt = this.conn.prepareStatement("insert into "+table+" (fullName, username, password, status) values (?, ?, ?, ?)");
             stmt.setString(1, fullName);
             stmt.setString(2, username);
             stmt.setString(3, password);
+            stmt.setInt(4, 0);
             int rs = stmt.executeUpdate();
             return rs == 1;
         }catch(Exception e)
@@ -114,8 +115,9 @@ public class Admin extends ConnectionDatabase{
     public boolean createPromo(String name)
     {
         try{
-            this.stmt = this.conn.prepareStatement("insert into promotion (name) values (?)");
+            this.stmt = this.conn.prepareStatement("insert into promotion (name, status) values (?, ?)");
             stmt.setString(1, name);
+            stmt.setInt(2, 0);
             int rs = stmt.executeUpdate();
             return rs == 1;
         }catch(Exception e)
@@ -128,7 +130,7 @@ public class Admin extends ConnectionDatabase{
     public boolean asignFormerToPromo(int idF, int idP)
     {
         try{
-            this.stmt = this.conn.prepareStatement("update promotion set idF = ? where id = ?");
+            this.stmt = this.conn.prepareStatement("update promotion set idF = ?, status = 1 where id = ?");
             stmt.setInt(1, idF);
             stmt.setInt(2, idP);
             int rs = stmt.executeUpdate();
@@ -137,6 +139,36 @@ public class Admin extends ConnectionDatabase{
         {
             System.out.println("error => " + e);
             return false;
+        }
+    }
+    public boolean updateStatusFormer(int idF)
+    {
+        try{
+            this.stmt = this.conn.prepareStatement("update formateur set status = 1 where id = ?");
+            stmt.setInt(1, idF);
+            int rs = stmt.executeUpdate();
+            return rs == 1;
+        }catch(Exception e)
+        {
+            System.out.println("error => " + e);
+            return false;
+        }
+    }
+    public String countPromosNot()
+    {
+        try{
+            this.stmt = this.conn.prepareStatement("select count(*) from promotion where status = 0");
+            ResultSet rs = stmt.executeQuery();
+            String count = "0";
+            while(rs.next())
+            {
+                count = rs.getString(1);
+            }
+            return count;
+        }catch(Exception e)
+        {
+            System.out.println("error => " + e);
+            return "false";
         }
     }
 
@@ -160,18 +192,6 @@ public class Admin extends ConnectionDatabase{
         {
             System.out.println("error => " + e);
             return arr;
-        }
-    }
-
-    public boolean asignFormerToPromo()
-    {
-        try {
-
-            return true;
-        }catch(Exception e)
-        {
-            System.out.println("error => "+e);
-            return false;
         }
     }
 

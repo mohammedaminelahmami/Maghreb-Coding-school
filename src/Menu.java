@@ -1,4 +1,5 @@
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Menu {
@@ -21,7 +22,7 @@ public class Menu {
                     // Declaration
                     Admin admin = new Admin();
 
-                    System.out.println("-------------| Welcome " + username + " |-------------");
+                    System.out.println("---------------------| Welcome " + username + " |---------------------");
                     System.out.println("1 ) - Create a Former account");
                     System.out.println("2 ) - Create a Student account");
                     System.out.println("3 ) - Create a Promo");
@@ -35,7 +36,7 @@ public class Menu {
                     if(Integer.parseInt(choixAdmin) == 1 || Integer.parseInt(choixAdmin) == 2)
                     {
                         String type = Integer.parseInt(choixAdmin) == 1 ? "Former" : "Student";
-                        String table = type == "Former" ? "formateur" : "apprenant";
+                        String table = type.equals("Former") ? "formateur" : "apprenant";
 
                         System.out.println("Create a "+ type +" account -------- |");
                         System.out.print("fullName : ");
@@ -50,49 +51,100 @@ public class Menu {
                     }else if (Integer.parseInt(choixAdmin) == 3)
                     {
                         System.out.println("Create a Promo -------- |");
-                        String promoName = scanner.nextLine();
                         System.out.println("Promo Name : ");
+                        String promoName = scanner.nextLine();
 
-                        admin.createPromo("promoName");
+                        admin.createPromo(promoName);
                     }else if (Integer.parseInt(choixAdmin) == 4)
                     {
                         System.out.println("-----------------------------------------------------------");
-                        String[][] arr = admin.selectAllPromos();
+                        String count = admin.countPromosNot();
 
-                        for(int i = 0; i < arr.length; i++)
+                        // --- declaration ---
+                            ArrayList<String> checkCountarr = new ArrayList<String>();
+                            ArrayList<String> checkCountarr1 = new ArrayList<String>();
+                        // -----
+
+                        if(Integer.parseInt(count) != 0 )
                         {
-                            for(int j = 0; j < 1; j++)
-                            {
-                                // Show All promo names
-                                System.out.println((i+1)+" ) - "+arr[i][1]);
+                            String[][] arr = admin.selectAllPromos();
+
+                            for (int i = 0; i < arr.length; i++) {
+                                for (int j = 0; j < 1; j++) {
+                                    if (arr[i][2].equals("0")) {
+                                        // Show All promo names
+                                        System.out.println((i + 1) + " ) - " + arr[i][1]);
+                                    }
+                                    else{
+                                        checkCountarr.add(String.valueOf(i+1));
+                                    }
+                                }
                             }
-                        }
-                        System.out.println("choose a promo : ");
-                        String choixPromo = scanner.nextLine();
+                            boolean a = false;
+                            System.out.println("choose a promo : ");
+                            String choixPromo = scanner.nextLine();
 
-                        String promo = arr[Integer.parseInt(choixPromo)-1][1];
-                        String idPromo = admin.getPromoId(promo);
-
-                        String[][] arr1 = admin.selectAllAccounts("formateur");
-
-                        for(int i = 0; i < arr1.length; i++)
-                        {
-                            for(int j = 0; j < 1; j++)
+                            for(String check : checkCountarr)
                             {
-                                // Show All promo names
-                                System.out.println((i+1)+" ) - "+arr1[i][1]);
+                                if(Objects.equals(check, choixPromo))
+                                {
+                                    a = false;
+                                    break;
+                                }else{
+                                    a = true;
+                                }
+                                // System.out.println(check);
                             }
+                            System.out.println(a);
+                            if(a) {
+
+                                String promo = arr[Integer.parseInt(choixPromo) - 1][1];
+                                String idPromo = admin.getPromoId(promo);
+
+                                String[][] arr1 = admin.selectAllAccounts("formateur");
+
+                                for (int i = 0; i < arr1.length; i++) {
+                                    for (int j = 0; j < 1; j++) {
+                                        if (arr1[i][4].equals("0")) {
+                                            // Show All former names (status = 0)
+                                            System.out.println((i + 1) + " ) - " + arr1[i][1]);
+                                        }else{
+                                            checkCountarr1.add(String.valueOf(i + 1));
+                                        }
+                                    }
+                                }
+                                boolean b = false;
+                                System.out.println("choose formateur to asign it to promo " + promo);
+                                String choixFormer = scanner.nextLine();
+
+                                for(String check1 : checkCountarr1)
+                                {
+                                    if(Objects.equals(check1, choixFormer))
+                                    {
+                                        b = false;
+                                        break;
+                                    }else{
+                                        b = true;
+                                    }
+                                    // System.out.println(check1);
+                                }
+                                if(b) {
+
+                                    String former = arr1[Integer.parseInt(choixFormer) - 1][1];
+                                    String idFormer = admin.getFormerId(former);
+
+                                    // assign former to promotion
+                                    admin.asignFormerToPromo(Integer.parseInt(idFormer), Integer.parseInt(idPromo));
+                                    admin.updateStatusFormer(Integer.parseInt(idFormer));
+                                }else{
+                                    System.out.println("Pls choose correct number");
+                                }
+                            }else{
+                                System.out.println("Pls choose correct number");
+                            }
+                        }else{
+                            System.out.println("No Promo ...");
                         }
-
-                        System.out.println("choose former to asign it to promo "+promo);
-                        String choixFormer = scanner.nextLine();
-
-                        String former = arr1[Integer.parseInt(choixFormer)-1][1];
-                        String idFormer = admin.getFormerId(former);
-
-                        // assign former to promotion
-                        admin.asignFormerToPromo(Integer.parseInt(idFormer), Integer.parseInt(idPromo));
-
                         System.out.println("-----------------------------------------------------------");
                     }
                 }else{
@@ -113,6 +165,8 @@ public class Menu {
                     System.out.println("3 ) - List of students promo");
                     System.out.println("4 ) - Logout");
 
+                    System.out.println();
+
                 }else{
                     System.out.println("sir fhalek");
                 }
@@ -128,6 +182,7 @@ public class Menu {
                     System.out.println("-------------| Welcome " + username + " |-------------");
                     System.out.println("1 ) - Briefs");
                     System.out.println("2 ) - Logout");
+
 
 
                 }else{

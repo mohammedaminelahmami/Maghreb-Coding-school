@@ -11,6 +11,5 @@ public class Main {
         System.out.print("|--> ");
         int choix = s1.nextInt();
         Menu menu = new Menu(choix, s1);
-
     }
 }
