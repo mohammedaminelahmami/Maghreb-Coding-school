@@ -62,7 +62,7 @@ public class Menu {
                             // --- declaration ---
                             ArrayList<String> checkCountarr = new ArrayList<>();
                             ArrayList<String> checkCountarr1 = new ArrayList<>();
-                            ArrayList<String> promosStatus0 = new ArrayList<>();
+                            //ArrayList<String> promosStatus0 = new ArrayList<>();
                             ArrayList<String> formateurStatus0 = new ArrayList<>();
                             boolean a = true;
                             boolean b = true;
@@ -76,14 +76,14 @@ public class Menu {
                                         if (arr[i][2].equals("0")) {
                                             // Show All promo names | status == 0
                                             System.out.println((i + 1) + " ) - " + arr[i][1]);
-                                            promosStatus0.add(arr[i][1]);
+                                            //promosStatus0.add(arr[i][1]);
                                         } else {
                                             checkCountarr.add(String.valueOf(i + 1));
                                         }
                                     }
                                 }
 
-                                if(promosStatus0.size() != 0)
+                                if(count.length() != 0)
                                 {
                                     System.out.println("choose a promo : ");
                                     String choixPromo = scanner.nextLine();
@@ -135,13 +135,13 @@ public class Menu {
                                                 System.out.println("Pls choose correct number");
                                             }
                                         }else{
-                                            System.out.println("--> No formateur ...");
+                                            System.out.println("--> No former to assign ...");
                                         }
                                     } else {
                                         System.out.println("Pls choose correct number");
                                     }
                                 }else{
-                                    System.out.println("--> No promo ...");
+                                    System.out.println("--> No promo found ...");
                                 }
                             } else {
                                 System.out.println("No Promo ...");
