@@ -3,6 +3,12 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class Menu {
+
+    public Admin admin = new Admin();
+    public Formateur former = new Formateur();
+    public Student apprenant = new Student();
+    public Scanner scanner = new Scanner(System.in);
+
     public Menu(int choix, Scanner s1)
     {
         boolean drop = true;
@@ -18,9 +24,6 @@ public class Menu {
             switch (choix) {
                 case 1 -> {
                     if (connect.login(username, password, "admin")) {
-                        // Declaration
-                        Admin admin = new Admin();
-
                         System.out.println("---------------------| Welcome " + username + " |---------------------");
                         System.out.println("1 ) - Create a Former account");
                         System.out.println("2 ) - Create a Student account");
@@ -28,7 +31,6 @@ public class Menu {
                         System.out.println("4 ) - Assign former to promo");
                         System.out.println("5 ) - Logout");
 
-                        Scanner scanner = new Scanner(System.in);
                         System.out.print("|--> ");
                         String choixAdmin = scanner.nextLine();
 
@@ -124,9 +126,8 @@ public class Menu {
                                             }
 
                                             if (b) {
-                                                String former = arr1[Integer.parseInt(choixFormer) - 1][1];
-                                                String idFormer = admin.getFormerId(former);
-
+                                                String formateur = arr1[Integer.parseInt(choixFormer) - 1][1];
+                                                String idFormer = former.getFormerId(formateur);
                                                 // assign former to promotion
                                                 admin.asignFormerToPromo(Integer.parseInt(idFormer), Integer.parseInt(idPromo));
                                                 admin.updateStatusFormer(Integer.parseInt(idFormer));
@@ -152,8 +153,8 @@ public class Menu {
                 }
                 case 2 -> {
                     if (connect.login(username, password, "formateur")) {
-                        // Declaration
-                        Formateur former = new Formateur();
+
+                        String[][] getAllStudent = admin.selectAllAccounts("apprenant");
 
                         System.out.println("-------------| Welcome " + username + " |-------------");
                         System.out.println("1 ) - Add Student to Promo");
@@ -161,14 +162,32 @@ public class Menu {
                         System.out.println("3 ) - List of students promo");
                         System.out.println("4 ) - Logout");
 
-                        System.out.println();
+                        System.out.print("|--> ");
+                        String choixFormerMenu = scanner.nextLine();
 
+                        if(Integer.parseInt(choixFormerMenu) == 1)
+                        {
+                            ArrayList<String> studentNames = new ArrayList<>();
+                            String getFormerId = former.getFormerIdd(username);
+                            ArrayList<String> thisPromo = former.getPromo(Integer.parseInt(getFormerId));
+                            for(int i = 0; i < getAllStudent.length; i++)
+                            {
+                                for(int j = 0; j < 1; j++)
+                                {
+                                    if(getAllStudent[i][4].equals("0"))
+                                    {
+                                        System.out.println((i + 1) + " ) - " + getAllStudent[i][1]);
+                                        studentNames.add(getAllStudent[i][1]);
+                                    }
+                                }
+                            }
+                            System.out.println("choose a Student to be assigned to promo | "+ thisPromo.get(1) +" |");
+                            drop = false;
+                        }
                     }
                 }
                 case 3 -> {
                     if (connect.login(username, password, "apprenant")) {
-                        // Declaration
-                        Student apprenant = new Student();
 
                         System.out.println("-------------| Welcome " + username + " |-------------");
                         System.out.println("1 ) - Briefs");

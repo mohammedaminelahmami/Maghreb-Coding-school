@@ -1,5 +1,4 @@
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class Admin extends ConnectionDatabase{
@@ -172,29 +171,6 @@ public class Admin extends ConnectionDatabase{
         }
     }
 
-    public ArrayList<String> selectPromo(int id)
-    {
-        try{
-            this.stmt = this.conn.prepareStatement("select * from promotion where id = ?");
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-
-            // next() - 1 - 2 - 3 - 4 - 5
-
-            while(rs.next())
-            {
-                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
-                    arr.add(rs.getString(i));
-                }
-            }
-            return arr;
-        }catch (Exception e)
-        {
-            System.out.println("error => " + e);
-            return arr;
-        }
-    }
-
     public String[][] selectAllPromos()
     {
         try{
@@ -221,25 +197,6 @@ public class Admin extends ConnectionDatabase{
         {
             System.out.println("error => " + e);
             return arrayVide;
-        }
-    }
-
-    public String getFormerId(String formerName)
-    {
-        try{
-            this.stmt = this.conn.prepareStatement("select id from formateur where fullName = ?");
-            stmt.setString(1, formerName);
-            ResultSet rs = stmt.executeQuery();
-            String id = "init";
-            while(rs.next())
-            {
-                id = rs.getString(1);
-            }
-            return id;
-        }catch(Exception e)
-        {
-            System.out.println("error => "+e);
-            return "0";
         }
     }
 
