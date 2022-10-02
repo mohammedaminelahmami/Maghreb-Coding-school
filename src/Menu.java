@@ -214,12 +214,28 @@ public class Menu {
                 case 3 -> {
                     if (connect.login(username, password, "apprenant")) {
 
+                        String getFormerId = former.getFormerIdd(username);
+                        //String thisPromo = promotion.getPromoName(Integer.parseInt(getFormerId));
+                        //String getPromoId = promotion.getPromoId(thisPromo);
+
                         System.out.println("-------------| Welcome " + username + " |-------------");
                         System.out.println("1 ) - Briefs");
                         System.out.println("2 ) - Logout");
 
+                        System.out.print("|--> ");
+                        String choixStudent = scanner.nextLine();
+                        //String[][] getAllBrief = apprenant.getAllBriefsPromo();
 
+                        if(Integer.parseInt(choixStudent) == 1)
+                        {
+                            System.out.println("-------------------| Briefs |-------------------");
+
+                            System.out.println("|----------------------------------------------|");
+                            System.out.println("|                                              |");
+                            System.out.println("|----------------------------------------------|");
+                        }
                     }
+                    drop = false;
                 }
                 default -> drop = false;
             }

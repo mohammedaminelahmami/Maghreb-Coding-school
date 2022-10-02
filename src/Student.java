@@ -4,7 +4,9 @@ import java.util.ArrayList;
 public class Student extends ConnectionDatabase {
 
     public String id;
-    ArrayList<String> arrVide = new ArrayList<>();
+    public ArrayList<String> arrVide = new ArrayList<>();
+    public String[][] arrVidee = new String[0][0];
+    public Admin admin = new Admin();
 
     public Student()
     {
@@ -71,6 +73,33 @@ public class Student extends ConnectionDatabase {
         {
             System.out.println("error => "+e);
             return "0";
+        }
+    }
+
+    public String[][] getAllBriefsPromo(int idP)
+    {
+        try{
+            this.stmt = this.conn.prepareStatement("select * from brief where idP = ? ");
+            stmt.setInt(1, idP);
+            ResultSet rs = stmt.executeQuery();
+
+            int a = admin.getNumberRows("brief");
+            int b = admin.getNumberColumn("brief");
+            String[][] arr = new String[a][b];
+            int i = 0;
+            while(rs.next())
+            {
+                for(int j= 0; j < b; j++)
+                {
+                    arr[i][j] = rs.getString(j+1);
+                }
+                i++;
+            }
+            return arr;
+        }catch(Exception e)
+        {
+            System.out.println("error => "+e);
+            return arrVidee;
         }
     }
 
