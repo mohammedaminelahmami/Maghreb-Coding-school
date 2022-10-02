@@ -7,6 +7,7 @@ public class Menu {
     public Admin admin = new Admin();
     public Formateur former = new Formateur();
     public Student apprenant = new Student();
+    public Promo promotion = new Promo();
     public Scanner scanner = new Scanner(System.in);
 
     public Menu(int choix, Scanner s1)
@@ -64,7 +65,6 @@ public class Menu {
                             // --- declaration ---
                             ArrayList<String> checkCountarr = new ArrayList<>();
                             ArrayList<String> checkCountarr1 = new ArrayList<>();
-                            //ArrayList<String> promosStatus0 = new ArrayList<>();
                             ArrayList<String> formateurStatus0 = new ArrayList<>();
                             boolean a = true;
                             boolean b = true;
@@ -98,7 +98,7 @@ public class Menu {
                                     }
                                     if (a) {
                                         String promo = arr[Integer.parseInt(choixPromo) - 1][1];
-                                        String idPromo = admin.getPromoId(promo);
+                                        String idPromo = promotion.getPromoId(promo);
 
                                         String[][] arr1 = admin.selectAllAccounts("formateur");
                                         for (int i = 0; i < arr1.length; i++) {
@@ -153,10 +153,13 @@ public class Menu {
                 }
                 case 2 -> {
                     if (connect.login(username, password, "formateur")) {
+                        String getFormerId = former.getFormerIdd(username);
+                        String thisPromo = promotion.getPromoName(Integer.parseInt(getFormerId));
+                        String getPromoId = promotion.getPromoId(thisPromo);
 
-                        String[][] getAllStudent = admin.selectAllAccounts("apprenant");
+                        String ifPromoExist = thisPromo.length() > 0 ? thisPromo : "";
 
-                        System.out.println("-------------| Welcome " + username + " |-------------");
+                        System.out.println("------ -------| Welcome " + username + " |------- "+ifPromoExist+" ------");
                         System.out.println("1 ) - Add Student to Promo");
                         System.out.println("2 ) - Create a Brief");
                         System.out.println("3 ) - List of students promo");
@@ -167,21 +170,43 @@ public class Menu {
 
                         if(Integer.parseInt(choixFormerMenu) == 1)
                         {
-                            ArrayList<String> studentNames = new ArrayList<>();
-                            String getFormerId = former.getFormerIdd(username);
-                            ArrayList<String> thisPromo = former.getPromo(Integer.parseInt(getFormerId));
-                            for(int i = 0; i < getAllStudent.length; i++)
+                            ArrayList<String> getAllStudentStatus0 = apprenant.getStudentNameStatus0();
+                            for(int i = 0; i < getAllStudentStatus0.size(); i++)
                             {
-                                for(int j = 0; j < 1; j++)
-                                {
-                                    if(getAllStudent[i][4].equals("0"))
-                                    {
-                                        System.out.println((i + 1) + " ) - " + getAllStudent[i][1]);
-                                        studentNames.add(getAllStudent[i][1]);
-                                    }
-                                }
+                                System.out.println((i+1)+" ) - "+getAllStudentStatus0.get(i));
                             }
-                            System.out.println("choose a Student to be assigned to promo | "+ thisPromo.get(1) +" |");
+                            System.out.println("choose a Student to be assigned to promo | "+ thisPromo +" |");
+                            String choixStudent = scanner.nextLine();
+                            String getIdStudent = apprenant.getIdStudent(getAllStudentStatus0.get(Integer.parseInt(choixStudent)-1));
+
+                            former.asignStudentToPromo(Integer.parseInt(getPromoId), Integer.parseInt(getIdStudent));
+                            drop = false;
+                        }else if(Integer.parseInt(choixFormerMenu) == 2)
+                        {
+                            System.out.println("Create a Brief -------- |");
+                            System.out.print("Context : ");
+                            String context = scanner.nextLine();
+                            System.out.print("Deadline (par jour) : ");
+                            String deadline = scanner.nextLine();
+                            scanner.close();
+
+                            // condition choix
+                            if(!context.isEmpty() && !deadline.isEmpty())
+                            {
+                                former.addBrief(context, Integer.parseInt(deadline), Integer.parseInt(getPromoId));
+                                drop = false;
+                            }else{
+                                System.out.println("pls enter correct fields");
+                                drop = false;
+                            }
+                        }else if(Integer.parseInt(choixFormerMenu) == 3)
+                        {
+                            ArrayList<String> listStudents = apprenant.getAllStudentsName(Integer.parseInt(getPromoId));
+                            System.out.println("Students --------> | "+ifPromoExist+" |");
+                            for(String l : listStudents)
+                            {
+                                System.out.println("- "+l);
+                            }
                             drop = false;
                         }
                     }
@@ -196,9 +221,7 @@ public class Menu {
 
                     }
                 }
-                default -> {
-                    drop = false;
-                }
+                default -> drop = false;
             }
         }
     }

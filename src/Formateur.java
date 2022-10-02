@@ -11,10 +11,10 @@ public class Formateur extends ConnectionDatabase {
         //
     }
 
-    public boolean addStudentToPromo(int idP, int id)
+    public boolean asignStudentToPromo(int idP, int id)
     {
         try{
-            this.stmt = this.conn.prepareStatement("update apprenant set idP = ? where id = ?");
+            this.stmt = this.conn.prepareStatement("update apprenant set idP = ?, status = 1 where id = ?");
             stmt.setInt(1, idP);
             stmt.setInt(2, id);
             int rs = stmt.executeUpdate();
@@ -39,28 +39,6 @@ public class Formateur extends ConnectionDatabase {
         {
             System.out.println("error => " + e);
             return false;
-        }
-    }
-
-    public ArrayList<String> getPromo(int id)
-    {
-        ArrayList<String> arr = new ArrayList<String>();
-        try{
-            this.stmt = this.conn.prepareStatement("select * from promotion where id = ?");
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            // next() - 1 - 2 - 3 - 4 - 5
-            while(rs.next())
-            {
-                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
-                    arr.add(rs.getString(i));
-                }
-            }
-            return arr;
-        }catch (Exception e)
-        {
-            System.out.println("error => " + e);
-            return arr;
         }
     }
 
