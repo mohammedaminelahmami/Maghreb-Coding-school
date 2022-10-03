@@ -1,50 +1,50 @@
-import java.util.*;
 import javax.mail.*;
-import javax.mail.internet.*;
-import javax.activation.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.Properties;
 
 public class Email {
-    public Email ()
-    {
-        // Recipient's email ID needs to be mentioned.
-        String to = "medamine0029@gmail.com";
 
-        // Sender's email ID needs to be mentioned
-        String from = "lahmamimohammedamine@gmail.com";
+    public static boolean sendEmail(){
+        final String user="lahmamimohammedamine@gmail.com";
+        final String password="cexptpohulzduswy";
 
-        // Assuming you are sending email from localhost
+        // get the session object
         String host = "smtp.gmail.com";
 
-        // Get system properties
         Properties properties = System.getProperties();
+        properties.put("mail.smtp.auth", true);
+        properties.put("mail.smtp.host",host);
+        properties.put("mail.smtp.port",587);
+        properties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+        properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        properties.put("mail.smtp.starttls.enable", "true");
 
-        // Setup mail server
-        properties.setProperty("mail.smtp.host", host);
+        Session session = Session.getDefaultInstance(properties,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(user,password);
+                    }
+                });
 
-        // Get the default Session object.
-        Session session = Session.getDefaultInstance(properties);
-
+        // compose of the mail
+        // try catch to handle errors
         try {
-            // Create a default MimeMessage object.
             MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(user));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress("medamine0029@gmail.com"));
 
-            // Set From: header field of the header.
-            message.setFrom(new InternetAddress(from));
-
-            // Set To: header field of the header.
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-
-            // Set Subject: header field
-            message.setSubject("New Brief");
-
-            // Now set the actual message
+            message.setSubject("New Brief !");
             message.setText("Brief : Hello World ! in Java");
 
-            // Send message
+            // try to send mail
             Transport.send(message);
-            System.out.println("Sent message successfully....");
-        } catch (MessagingException mex) {
-            mex.printStackTrace();
+            System.out.println("brief sent to learner successfully 👏👏👏");
+        }catch (MessagingException e){
+            System.out.println("something went wrong "+ e.getMessage());
+            return false;
         }
+        return true;
+
     }
 }
