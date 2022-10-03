@@ -103,4 +103,24 @@ public class Student extends ConnectionDatabase {
         }
     }
 
+    public ArrayList<String> getAllEmailsPromo(int idP)
+    {
+        try{
+            this.stmt = this.conn.prepareStatement("select email from apprenant where idP = ?");
+            stmt.setInt(1, idP);
+            ResultSet rs = stmt.executeQuery();
+            ArrayList<String> arr = new ArrayList<>();
+
+            while(rs.next())
+            {
+                arr.add(rs.getString("email"));
+            }
+            return arr;
+        }catch(Exception e)
+        {
+            System.out.println("error => "+e);
+            return arrVide;
+        }
+    }
+
 }

@@ -46,9 +46,11 @@ public class Menu {
                             String usernameInput = scanner.nextLine();
                             System.out.print("password : ");
                             String passwordInput = scanner.nextLine();
+                            System.out.print("Email : ");
+                            String emailInput = scanner.nextLine();
                             scanner.close();
 
-                            admin.createAccount(table, fullNameInput, usernameInput, passwordInput);
+                            admin.createAccount(table, fullNameInput, usernameInput, passwordInput, emailInput);
                             drop = false;
 
                         } else if (Integer.parseInt(choixAdmin) == 3) {
@@ -194,11 +196,15 @@ public class Menu {
                             if(!context.isEmpty() && !deadline.isEmpty())
                             {
                                 former.addBrief(context, Integer.parseInt(deadline), Integer.parseInt(getPromoId));
-                                drop = false;
+                                ArrayList<String> emails = apprenant.getAllEmailsPromo(Integer.parseInt(getPromoId));
+                                for(String e : emails)
+                                {
+                                    Email.sendEmail(e);
+                                }
                             }else{
                                 System.out.println("pls enter correct fields");
-                                drop = false;
                             }
+                            drop = false;
                         }else if(Integer.parseInt(choixFormerMenu) == 3)
                         {
                             ArrayList<String> listStudents = apprenant.getAllStudentsName(Integer.parseInt(getPromoId));
@@ -213,10 +219,6 @@ public class Menu {
                 }
                 case 3 -> {
                     if (connect.login(username, password, "apprenant")) {
-
-                        String getFormerId = former.getFormerIdd(username);
-                        //String thisPromo = promotion.getPromoName(Integer.parseInt(getFormerId));
-                        //String getPromoId = promotion.getPromoId(thisPromo);
 
                         System.out.println("-------------| Welcome " + username + " |-------------");
                         System.out.println("1 ) - Briefs");

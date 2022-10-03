@@ -4,8 +4,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 public class Email {
-
-    public static boolean sendEmail(){
+    public static boolean sendEmail(String email){
         final String user="lahmamimohammedamine@gmail.com";
         final String password="cexptpohulzduswy";
 
@@ -32,16 +31,16 @@ public class Email {
         try {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(user));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress("medamine0029@gmail.com"));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
 
             message.setSubject("New Brief !");
             message.setText("Brief : Hello World ! in Java");
 
             // try to send mail
             Transport.send(message);
-            System.out.println("brief sent to learner successfully 👏👏👏");
+            System.out.println("brief sent to learner successfully ✔✔✔");
         }catch (MessagingException e){
-            System.out.println("something went wrong "+ e.getMessage());
+            // System.out.println("something went wrong "+ e.getMessage());
             return false;
         }
         return true;
