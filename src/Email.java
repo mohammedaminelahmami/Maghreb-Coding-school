@@ -34,7 +34,7 @@ public class Email {
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
 
             message.setSubject("New Brief !");
-            message.setText("Brief : Hello World ! in Java");
+            message.setText("New Brief has been Created !");
 
             // try to send mail
             Transport.send(message);
@@ -44,6 +44,5 @@ public class Email {
             return false;
         }
         return true;
-
     }
 }
