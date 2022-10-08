@@ -76,6 +76,24 @@ public class Student extends ConnectionDatabase {
         }
     }
 
+    public String getIdpFromStudent(String username)
+    {
+        try {
+            this.stmt = this.conn.prepareStatement("select idP from apprenant where username = ?");
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next())
+            {
+                this.id = rs.getString("idP");
+            }
+            return this.id;
+        }catch (Exception e)
+        {
+            System.out.println("Error => "+e);
+            return "0";
+        }
+    }
+
     public String[][] getAllBriefsPromo(int idP)
     {
         try{

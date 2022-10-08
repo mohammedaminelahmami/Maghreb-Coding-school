@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -12,8 +13,8 @@ public class Menu {
 
     public Menu(int choix, Scanner s1)
     {
-        boolean drop = true;
-        String chName = choix == 1 ? "Admin" : (choix == 2 ? "Formateur" : "Student");
+        while(true) {
+            String chName = choix == 1 ? "Admin" : (choix == 2 ? "Formateur" : "Student");
             System.out.println("########| "+chName+" Login |########");
             System.out.print("Enter username : |--> ");
             String username = s1.next();
@@ -21,7 +22,6 @@ public class Menu {
             String password = s1.next();
 
             Connect connect = new Connect();
-        while(drop) {
             switch (choix) {
                 case 1 -> {
                     if (connect.login(username, password, "admin")) {
@@ -50,17 +50,14 @@ public class Menu {
                                 System.out.print("Email : ");
                                 String emailInput = scanner.nextLine();
 
-                                if(admin.createAccount(table, fullNameInput, usernameInput, passwordInput, emailInput))
-                                {
-                                    break;
-                                }
+                                admin.createAccount(table, fullNameInput, usernameInput, passwordInput, emailInput);
                             } else if (Integer.parseInt(choixAdmin) == 3) {
                                 System.out.println("Create a Promo -------- |");
                                 System.out.println("Promo Name : ");
                                 String promoName = scanner.nextLine();
 
                                 admin.createPromo(promoName);
-                                drop = false;
+                                //drop = false;
                             } else if (Integer.parseInt(choixAdmin) == 4) {
                                 System.out.println("-----------------------------------------------------------");
                                 String count = admin.countPromosNot();
@@ -132,23 +129,25 @@ public class Menu {
                                                     // assign former to promotion
                                                     admin.asignFormerToPromo(Integer.parseInt(idFormer), Integer.parseInt(idPromo));
                                                     admin.updateStatusFormer(Integer.parseInt(idFormer));
-                                                    drop = false;
-                                                } else {
+                                                    //drop = false;
+                                                }else {
                                                     System.out.println("Pls choose correct number");
                                                 }
-                                            } else {
+                                            }else {
                                                 System.out.println("--> No former to assign ...");
                                             }
-                                        } else {
+                                        }else {
                                             System.out.println("Pls choose correct number");
                                         }
-                                    } else {
+                                    }else {
                                         System.out.println("--> No promo found ...");
                                     }
-                                } else {
+                                }else {
                                     System.out.println("No Promo ...");
                                 }
                                 System.out.println("-----------------------------------------------------------");
+                            } else if (Integer.parseInt(choixAdmin) == 5) {
+                                System.exit(0);
                             }
                         }
                     }
@@ -156,61 +155,64 @@ public class Menu {
                 case 2 -> {
                     if (connect.login(username, password, "formateur")) {
                         String getFormerId = former.getFormerIdd(username);
-                        String thisPromo = promotion.getPromoName(Integer.parseInt(getFormerId));
+
+                        String thisPromo = promotion.getPromoName(Integer.parseInt(getFormerId)); // if null
                         String getPromoId = promotion.getPromoId(thisPromo);
-                        String ifPromoExist = thisPromo.length() > 0 ? thisPromo : "";
+                        String ifPromoExist = thisPromo != null ? thisPromo : "";
 
-                        while(true)
+                        if(!ifPromoExist.equals(""))
                         {
-                            System.out.println("------ -------| Welcome " + username + " |------- " + ifPromoExist + " ------");
-                            System.out.println("1 ) - Add Student to Promo");
-                            System.out.println("2 ) - Create a Brief");
-                            System.out.println("3 ) - List of students promo");
-                            System.out.println("4 ) - Logout");
+                            while(true)
+                            {
+                                System.out.println("------ -------| Welcome " + username + " |------- " + ifPromoExist + " ------");
+                                System.out.println("1 ) - Add Student to Promo");
+                                System.out.println("2 ) - Create a Brief");
+                                System.out.println("3 ) - List of students promo");
+                                System.out.println("4 ) - Logout");
 
-                            System.out.print("|--> ");
-                            String choixFormerMenu = scanner.nextLine();
+                                System.out.print("|--> ");
+                                String choixFormerMenu = scanner.nextLine();
 
-                            if (Integer.parseInt(choixFormerMenu) == 1) {
-                                ArrayList<String> getAllStudentStatus0 = apprenant.getStudentNameStatus0();
-                                for (int i = 0; i < getAllStudentStatus0.size(); i++) {
-                                    System.out.println((i + 1) + " ) - " + getAllStudentStatus0.get(i));
-                                }
-                                System.out.println("choose a Student to be assigned to promo | " + thisPromo + " |");
-                                String choixStudent = scanner.nextLine();
-                                String getIdStudent = apprenant.getIdStudent(getAllStudentStatus0.get(Integer.parseInt(choixStudent) - 1));
-
-                                if(former.asignStudentToPromo(Integer.parseInt(getPromoId), Integer.parseInt(getIdStudent)))
-                                {
-                                    break;
-                                }
-                            } else if (Integer.parseInt(choixFormerMenu) == 2) {
-                                System.out.println("Create a Brief -------- |");
-                                System.out.print("Context : ");
-                                String context = scanner.nextLine();
-                                System.out.print("Deadline (par jour) : ");
-                                String deadline = scanner.nextLine();
-
-
-                                // condition choix
-                                if (!context.isEmpty() && !deadline.isEmpty()) {
-                                    former.addBrief(context, Integer.parseInt(deadline), Integer.parseInt(getPromoId));
-                                    ArrayList<String> emails = apprenant.getAllEmailsPromo(Integer.parseInt(getPromoId));
-                                    for (String e : emails) {
-                                        Email.sendEmail(e);
+                                if (Integer.parseInt(choixFormerMenu) == 1) {
+                                    ArrayList<String> getAllStudentStatus0 = apprenant.getStudentNameStatus0();
+                                    for (int i = 0; i < getAllStudentStatus0.size(); i++) {
+                                        System.out.println((i + 1) + " ) - " + getAllStudentStatus0.get(i));
                                     }
-                                    break;
-                                } else {
-                                    System.out.println("pls enter correct fields");
+                                    System.out.println("choose a Student to be assigned to promo | " + ifPromoExist + " |");
+                                    String choixStudent = scanner.nextLine();
+                                    String getIdStudent = apprenant.getIdStudent(getAllStudentStatus0.get(Integer.parseInt(choixStudent) - 1));
+                                    former.asignStudentToPromo(Integer.parseInt(getPromoId), Integer.parseInt(getIdStudent));
+                                } else if (Integer.parseInt(choixFormerMenu) == 2) {
+                                    System.out.println("Create a Brief -------- |");
+                                    System.out.print("Context : ");
+                                    String context = scanner.nextLine();
+                                    System.out.print("Deadline (par jour) : ");
+                                    String deadline = scanner.nextLine();
+
+                                    // condition choix
+                                    if (!context.isEmpty() && !deadline.isEmpty()) {
+                                        former.addBrief(context, Integer.parseInt(deadline), Integer.parseInt(getPromoId));
+                                        ArrayList<String> emails = apprenant.getAllEmailsPromo(Integer.parseInt(getPromoId));
+                                        for (String e : emails) {
+                                            Email.sendEmail(e);
+                                        }
+                                    } else {
+                                        System.out.println("pls enter correct fields");
+                                    }
+                                } else if (Integer.parseInt(choixFormerMenu) == 3) {
+                                    ArrayList<String> listStudents = apprenant.getAllStudentsName(Integer.parseInt(getPromoId));
+                                    System.out.println("Students --------> | " + ifPromoExist + " |");
+                                    for (String l : listStudents) {
+                                        System.out.println("- " + l);
+                                    }
+                                    //drop = false;
+                                } else if (Integer.parseInt(choixFormerMenu) == 3) {
+                                    System.exit(0);
                                 }
-                            } else if (Integer.parseInt(choixFormerMenu) == 3) {
-                                ArrayList<String> listStudents = apprenant.getAllStudentsName(Integer.parseInt(getPromoId));
-                                System.out.println("Students --------> | " + ifPromoExist + " |");
-                                for (String l : listStudents) {
-                                    System.out.println("- " + l);
-                                }
-                                drop = false;
                             }
+                        }else{
+                            System.out.println("assign the trainer in the promo!");
+                            System.exit(0);
                         }
                     }
                 }
@@ -224,16 +226,30 @@ public class Menu {
 
                             System.out.print("|--> ");
                             String choixStudent = scanner.nextLine();
-                            //String[][] getAllBrief = apprenant.getAllBriefsPromo();
+                            // getIdTrainer from student
+                            String idTrainer = apprenant.getIdpFromStudent(username);
 
                             if(Integer.parseInt(choixStudent) == 1)
                             {
                                 System.out.println("-------------------| Briefs |-------------------");
+                                if(idTrainer != null)
+                                {
+                                    String[][] getAllBrief = apprenant.getAllBriefsPromo(Integer.parseInt(idTrainer)); // if null
 
-                                System.out.println("|----------------------------------------------|");
-                                System.out.println("|                                              |");
-                                System.out.println("|----------------------------------------------|");
-                                break;
+                                    int inde = 1;
+                                    for(String[] b : getAllBrief)
+                                    {
+                                        System.out.println();
+                                        System.out.println("|---------------- Brief "+ inde++ +" ----------------|");
+                                        System.out.println("Context : "+b[1]);
+                                        System.out.println("|-----------------------------------------|");
+                                        System.out.println();
+                                    }
+                                }
+                            }
+                            else if (Integer.parseInt(choixStudent) == 2)
+                            {
+                                System.exit(0);
                             }
                         }
                     }

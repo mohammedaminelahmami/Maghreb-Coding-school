@@ -38,7 +38,7 @@ public class Email {
 
             // try to send mail
             Transport.send(message);
-            System.out.println("brief sent to learner successfully ✔✔✔");
+            System.out.println("brief sent to learner successfully :)");
         }catch (MessagingException e){
             // System.out.println("something went wrong "+ e.getMessage());
             return false;
