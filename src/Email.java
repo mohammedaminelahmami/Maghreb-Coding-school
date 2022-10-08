@@ -6,7 +6,7 @@ import java.util.Properties;
 public class Email {
     public static boolean sendEmail(String email){
         final String user="lahmamimohammedamine@gmail.com";
-        final String password="cexptpohulzduswy";
+        final String password="************";
 
         // get the session object
         String host = "smtp.gmail.com";
